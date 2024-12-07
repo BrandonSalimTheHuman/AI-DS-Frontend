@@ -184,7 +184,7 @@ function App() {
     } else {
       // get scale
       const scale = getScale(rootNote, scaleType);
-
+      console.log('VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
       // reverting errors
       setApproachError(false);
       setNoteAmountError(false);
