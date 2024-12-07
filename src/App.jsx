@@ -52,8 +52,8 @@ function App() {
   };
 
   // changing slider
-  const handleTemperatureChange = (event, newValue) => {
-    setTemperature(newValue);
+  const handleTemperatureChange = (event) => {
+    setTemperature(event.target.value);
   };
 
   // changing root note
@@ -201,7 +201,7 @@ function App() {
           (value) => value / 100
         );
         const response = await axios.post(
-          `${process.env.VITE_API_BASE_URL}/generate-music/`,
+          `${import.meta.env.VITE_API_BASE_URL}/generate-music/`,
           {
             model_type: approach,
             amount_of_notes: noteAmount,
