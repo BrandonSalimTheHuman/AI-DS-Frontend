@@ -12,3 +12,59 @@ h1 {
 h2 {
   font-size: 2.5vh;
 }
+
+hr {
+  width: 80%;
+  color:#cacaca;
+  border: 1px solid #d5b4e6;
+}
+
+.title {
+  background-color: #ffffff; 
+  width: 100%;              
+  position: relative;
+  transform-origin: bottom; /* Set the anchor point to the bottom */
+  transform: scaleX(10) scaleY(1.49);          
+  top: 0;                   
+  left: 0;                  
+  border-bottom: 2px solid #d5b4e6; 
+  z-index: -1;            
+  padding: 10px 20px;                
+  box-sizing: border-box;   
+}
+
+.content {
+  transform-origin: bottom; /* Set the anchor point to the bottom */
+  transform: scaleX(0.1) scaleY(0.66);
+  width: 100%;
+  height: 100%;
+}
+
+.parameters{
+  padding: 10px 20px;
+  width: 50%;
+  margin: 0 auto;
+  margin-top: 20px;
+  border-radius: 5px;
+  padding-bottom: 30px;
+}
+
+.parameters-container {
+  background-color: #ffffff;
+  border: 1px solid rgb(218,220,224);
+  border-radius: 5px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.details {
+  cursor: pointer;
+  color: #74ADF0;
+  transition: color 0.3s ease;
+  font-size: 13px;
+}
+.details:hover {
+  color: #5E83B3; /* Darker cyan color on hover */
+}

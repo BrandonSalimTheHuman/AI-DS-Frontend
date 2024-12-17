@@ -135,8 +135,24 @@ function App() {
         ),
       }));
     } else {
-      // if the total doesn't exceed 100, just apply the new value
-      setDurations((prev) => ({ ...prev, [type]: value }));
+      // If the total doesn't exceed 100, update the value and adjust only one other slider
+      const keys = Object.keys(durations).filter((key) => key !== type);
+      // Pick last key not being slid
+      const adjustmentKey = keys[keys.length - 1] === type ? keys[keys.length - 2] : keys[keys.length - 1];
+      const remainingValue = 100 - value;
+
+      // Update the durations object
+      setDurations((prev) => ({
+        ...prev,
+        [type]: value,
+        ...keys.reduce(
+          (obj, key) => ({
+            ...obj,
+            [key]: key === adjustmentKey ? remainingValue : prev[key],
+          }),
+          {}
+        ),
+      }));
     }
   };
 
@@ -480,14 +496,34 @@ function App() {
         </Box>
       )}
 
-      {/* Title */}
-      <h1>AI Music Composer for Classical Music Using</h1>
-      <h1>LSTM, Transformer, and GRU Approach</h1>
+      <div className='title' >
+        <div className='content'>
+          {/* Title */}
+          <h1>ClAIssical</h1>
+          <h3>AI Music Composer for Classical Music Using
+          LSTM, Transformer, and GRU Approach</h3>
+        </div>
+      </div>
+      
+      
+      <div className='parameters'>
 
+      <div className='parameters-container'>
+        {/* Subheading */}
+        <h2>Parameters</h2>
+        <hr/>
+        <p>
+          Various music-based parameters to specify how the music is generated. 
+        </p>
+        <div className='details' onClick={() => window.open("https://drive.google.com/file/d/1eA6Dpm9X9zqEgRIIGG8kIPEFRGl8XicY/view?usp=sharing", "_blank")}>More Details</div>
+      </div>
+      
       {/* Select approach */}
+      <div className='parameters-container'>
+      <div>
       <FormControl sx={{ m: 3.5, minWidth: '25vh' }}>
         {/* Label for the select component */}
-        <InputLabel sx={{ fontSize: '2vh' }}>Choose approach</InputLabel>
+        <InputLabel sx={{ fontSize: '2vh' }}>Select AI Model</InputLabel>
         <Select
           sx={{ fontSize: '2vh', minHeight: '6.5vh' }}
           value={approach}
@@ -507,9 +543,7 @@ function App() {
           <FormHelperText>Please choose an approach.</FormHelperText>
         )}
       </FormControl>
-
-      {/* Subheading */}
-      <h2>Parameters</h2>
+      </div>
 
       {/* Number of notes */}
       <FormControl sx={{ m: 3, minWidth: '25vh' }}>
@@ -534,8 +568,7 @@ function App() {
       </FormControl>
 
       {/* Temperature */}
-      <Box sx={{ mt: 2 }}>
-        <FormControl sx={{ m: 3, minWidth: '25vh' }}>
+      <FormControl sx={{ m: 3, minWidth: '25vh' }}>
           <TextField
             label='Temperature'
             value={temperature}
@@ -554,10 +587,11 @@ function App() {
             }}
             sx={{ fontSize: '2vh' }}
           />
-        </FormControl>
-      </Box>
-
-      {/* this is for the durations */}
+      </FormControl>
+      </div>
+      
+      {/* Durations */}
+      <div className='parameters-container'>
       <Typography sx={{ fontSize: '2vh' }}>Durations</Typography>
 
       <Box>
@@ -577,7 +611,7 @@ function App() {
               min={0}
               max={100}
               step={1}
-              sx={{ width: '50%', color: '#380885' }}
+              sx={{ width: '50%', color: '#555555' }}
             />
           </Box>
         ))}
@@ -585,7 +619,9 @@ function App() {
           Total: {Object.values(durations).reduce((sum, val) => sum + val, 0)}%
         </Typography>
       </Box>
+      </div>
 
+      <div className='parameters-container'>
       <Box sx={{ mt: 3 }}>
         <Typography variant='body1' sx={{ fontSize: '2vh' }}>
           Selected Key: {rootNote} {scaleType}
@@ -722,15 +758,29 @@ function App() {
           />
         </FormControl>
       </Box>
+      </div>
 
       <Button
-        variant='contained'
+        variant='outlined'
         color='success'
-        sx={{ fontSize: '2.5vh', minWidth: '20vh' }}
+        sx={{ 
+          fontSize: '2.5vh', 
+          minWidth: '20vh',
+          backgroundColor: 'white',  
+          color: 'green',             
+          border: '1px solid green',  
+          '&:hover': {
+            backgroundColor: '#a8e6a1', 
+            border: '1px solid green', 
+            color: 'green'             
+          }
+          }}
+        
         onClick={displayEverything}
       >
         Generate
       </Button>
+      </div>
     </>
   );
 }
