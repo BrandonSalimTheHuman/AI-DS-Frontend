@@ -93,66 +93,57 @@ function App() {
       durations[type] +
       value;
 
-    // if more than total
+    // if the total exceeds 100
     if (total > 100) {
-      // reduce the other sliders proportianally by getting their percentage of the new total and mapping them to max 100
+      const excess = total - 100;
+
+      // Identify keys of other sliders
       const keys = Object.keys(durations).filter((key) => key !== type);
-      let proportionalPercentages = keys.map((key) =>
-        Math.round((durations[key] / total) * 100)
-      );
 
-      // get the new total
-      let adjustedTotal =
-        proportionalPercentages.reduce((sum, val) => sum + val, 0) + value;
+      // Start from the last slider (reverse order)
+      const reversedKeys = keys.reverse();
 
-      // if the new total is not 100 because of the rounding
-      while (adjustedTotal !== 100) {
-        // get the difference
-        const diff = adjustedTotal > 100 ? -1 : 1;
+      // Distribute the excess starting from the last slider
+      const newDurations = { ...durations, [type]: value };
+      let remainingExcess = excess;
 
-        for (let i = 0; i < proportionalPercentages.length; i++) {
-          // make sure to not apply a -1 change to a slider that's at 0
-          if (proportionalPercentages[i] + diff >= 0) {
-            // apply difference
-            proportionalPercentages[i] += diff;
-            adjustedTotal += diff;
-            // break if new total is already exactly 100
-            if (adjustedTotal === 100) break;
-          }
-        }
+      for (let key of reversedKeys) {
+        const reducibleAmount = Math.min(remainingExcess, newDurations[key]);
+        newDurations[key] -= reducibleAmount;
+        remainingExcess -= reducibleAmount;
+
+        if (remainingExcess === 0) break; // Stop if all excess has been removed
       }
 
-      // set the new percentages for each duration type
-      setDurations((prev) => ({
-        ...prev,
-        [type]: value,
-        ...keys.reduce(
-          (obj, key, i) => ({
-            ...obj,
-            [key]: proportionalPercentages[i],
-          }),
-          {}
-        ),
-      }));
+      // Update the state
+      setDurations(newDurations);
     } else {
-      // If the total doesn't exceed 100, update the value and adjust only one other slider
-      const keys = Object.keys(durations).filter((key) => key !== type);
-      // Pick last key not being slid
-      const adjustmentKey = keys[keys.length - 1] === type ? keys[keys.length - 2] : keys[keys.length - 1];
-      const remainingValue = 100 - value;
+      const deficit = 100 - total;
 
-      // Update the durations object
-      setDurations((prev) => ({
-        ...prev,
-        [type]: value,
-        ...keys.reduce(
-          (obj, key) => ({
-            ...obj,
-            [key]: key === adjustmentKey ? remainingValue : prev[key],
-          }),
-          {}
-        ),
-      }));
+      // Identify keys of other sliders
+      const keys = Object.keys(durations).filter((key) => key !== type);
+
+      // Start from the last slider (reverse order)
+      const reversedKeys = keys.reverse();
+
+      // Distribute the excess starting from the last slider
+      const newDurations = { ...durations, [type]: value };
+      let remainingDeficit = deficit;
+
+      for (let key of reversedKeys) {
+        // Calculate the maximum amount that can be added to this slider without exceeding the deficit
+        const addableAmount = Math.min(remainingDeficit, 100 - newDurations[key]);
+    
+        // Increase the slider value by the addable amount
+        newDurations[key] += addableAmount;
+        remainingDeficit -= addableAmount;
+    
+        // If the deficit is fully distributed, break the loop
+        if (remainingDeficit === 0) break;
+      }
+    
+      // Update the state with the new durations
+      setDurations(newDurations);
     }
   };
 
